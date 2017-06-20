@@ -87,9 +87,14 @@ function islandora_restricted_datastreams_islandora_datastream_alter(AbstractObj
     $dsid = trim($dsid);
   }
   if (count($dsids) && strlen(trim($mime_type))) {
-    $actions = array('ingest', 'modify');
-    if (in_array($context['action'], $actions) && in_array($datastream->id, $dsids)) {
+    if ($context['action'] == 'ingest' && in_array($datastream->id, $dsids)) {
       $datastream->mimetype = $mime_type;
+    }
+    if ($context['action'] == 'modify' && in_array($datastream->id, $dsids)) {
+      if ($object[$dsid] && $datastream->id == $dsid) {
+        $datastream->mimetype = $mime_type;
+        $context['params']['dsString'] = file_get_contents($context['params']['dsfile']);
+      }
     }
   }
 }
