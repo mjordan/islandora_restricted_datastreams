@@ -1,0 +1,111 @@
+<?php
+
+/**
+ * @file
+ * Module file.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function islandora_restricted_datastreams_menu() {
+  $items = array();
+  $items['admin/islandora/tools/islandora_restricted_datastreams'] = array(
+    'title' => 'Islandora Restricted Datastreams',
+    'description' => 'Configure Islandora Restricted Datastreams.',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('administer site configuration'),
+    'page arguments' => array('islandora_restricted_datastreams_admin_settings'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Admin settings form builder.
+ */
+function islandora_restricted_datastreams_admin_settings() {
+  $form['islandora_restricted_datastreams_dsids'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Datastream IDs'),
+    '#description' => t('Comma-separated list of datastream IDs that you want to restrict to the roles below.'),
+    '#default_value' => variable_get('islandora_restricted_datastreams_dsids', ''),
+  );
+  $roles = user_roles();
+  $form['islandora_restricted_datastreams_allowed_roles'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $roles, 
+    '#title' => t('Allowed roles'),
+    '#default_value' => variable_get('islandora_restricted_datastreams_allowed_roles', array()),
+    '#description' => t('Roles users must have to be able to view the datastreams.'),
+  ); 
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_islandora_datastream_access().
+ */
+function islandora_restricted_datastreams_islandora_datastream_access($op, $object, $user) {
+  $perms = array(
+    ISLANDORA_VIEW_OBJECTS,
+    ISLANDORA_ADD_DS,
+    ISLANDORA_VIEW_DATASTREAM_HISTORY,
+    ISLANDORA_REVERT_DATASTREAM,
+    ISLANDORA_REPLACE_DATASTREAM_CONTENT,
+  );
+  $dsids =  variable_get('islandora_restricted_datastreams_dsids', '');
+  $dsids = explode(',', $dsids);
+  foreach ($dsids as &$dsid) {
+    $dsid = trim($dsid);
+  }
+  if (in_array($op, $perms)) {
+    foreach ($object as $datastream) {
+      if (in_array($datastream->id, $dsids)) {
+        if (!islandora_restricted_datastreams_get_role_intersection()) {
+          return FALSE;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_islandora_datastream_alter().
+ */
+function islandora_restricted_datastreams_islandora_datastream_alter($object, $datastream, &$context) {
+  // if (variable_get('islandora_metadata_extras_add_uuid_to_mods', FALSE)) {
+  if (TRUE) {
+    if ($object['ADMIN_INFO'] && $datastream->id == 'ADMIN_INFO' && $context['action'] == 'ingest') {
+      $datastream->mimetype = 'application/octet-stream';
+    }
+  }
+}
+
+/**
+ * Determines if the current user has any allowed roles.
+ *
+ * @return bool
+ *   TRUE if the user has one or more of the allowed roles,
+ *   FALSE if the user has no allowed roles.
+ */
+function islandora_restricted_datastreams_get_role_intersection() {
+  global $user;
+  $roles = user_roles();
+  $allowed_roles = variable_get('islandora_restricted_datastreams_allowed_roles', array());
+  // We need to convert the values of allowed roles into role names for comparison.
+  $allowed_role_names = array();
+  foreach ($allowed_roles as $key => $rid) {
+    if ($rid !== 0) {
+      $allowed_role_names[] = $roles[$rid];
+    }
+
+  }
+  $intersection = array_intersect($user->roles, $allowed_role_names);
+  if (count($intersection) > 0) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
