@@ -66,7 +66,7 @@ function islandora_restricted_datastreams_islandora_datastream_access($op, $obje
   foreach ($dsids as &$dsid) {
     $dsid = trim($dsid);
   }
-  if (in_array($op, $perms)) {
+  if (count($dsids) && in_array($op, $perms)) {
     foreach ($object as $datastream) {
       if (in_array($datastream->id, $dsids)) {
         if (!islandora_restricted_datastreams_get_role_intersection()) {
@@ -86,7 +86,7 @@ function islandora_restricted_datastreams_islandora_datastream_alter(AbstractObj
   foreach ($dsids as &$dsid) {
     $dsid = trim($dsid);
   }
-  if (strlen(trim($mime_type))) {
+  if (count($dsids) && strlen(trim($mime_type))) {
     $actions = array('ingest', 'modify');
     if (in_array($context['action'], $actions) && in_array($datastream->id, $dsids)) {
       $datastream->mimetype = $mime_type;
