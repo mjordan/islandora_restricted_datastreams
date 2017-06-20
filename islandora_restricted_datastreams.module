@@ -82,10 +82,13 @@ function islandora_restricted_datastreams_islandora_datastream_access($op, $obje
  */
 function islandora_restricted_datastreams_islandora_datastream_alter(AbstractObject $object, AbstractDatastream $datastream, &$context) {
   $mime_type = variable_get('islandora_restricted_datastreams_mime_type', 'application/octet-stream');
-  $restricted_dsids = explode(',', variable_get('islandora_restricted_datastreams_dsids', ''));
+  $dsids = explode(',', variable_get('islandora_restricted_datastreams_dsids', ''));
+  foreach ($dsids as &$dsid) {
+    $dsid = trim($dsid);
+  }
   if (strlen(trim($mime_type))) {
     $actions = array('ingest', 'modify');
-    if (in_array($context['action'], $actions) && in_array($datastream->id, $restricted_dsids)) {
+    if (in_array($context['action'], $actions) && in_array($datastream->id, $dsids)) {
       $datastream->mimetype = $mime_type;
     }
   }
