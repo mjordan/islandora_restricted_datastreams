@@ -1,6 +1,7 @@
 name = Islandora Restricted Datastreams
 description = "Utilty module that limits access to specific datastreams by role."
 package = Islandora Tools
+configure = admin/islandora/tools/islandora_restricted_datastreams
 dependencies[] = islandora
 version = 7.x-dev
 core = 7.x
