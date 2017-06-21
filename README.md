@@ -6,7 +6,7 @@ Utilty module that controls access to specific datastreams by role.
 
 The original use case for this module was that site admins wanted to store potentially sensitive information in a specific datastream, and they wanted to allow only users who had a particular Drupal role to access the datastream.
 
-The module provides a relatively lightweight way to control access to specific datastreams. It does this by relying on Drupal's access control mechanisms and does not use XACML policies.
+This module restricts access to the datastreams by relying on Drupal's access control mechanisms and does not use XACML policies.
 
 ## Requirements
 
@@ -14,7 +14,7 @@ The module provides a relatively lightweight way to control access to specific d
 
 ## Configuration and usage
 
-Enable this module as you would any other, and configure it at `admin/islandora/tools/islandora_restricted_datastreams`. List the IDs of the datastreams you want to restric, select the roles allowed to access them, and you're good to go.
+Enable this module as you would any other, and configure it at `admin/islandora/tools/islandora_restricted_datastreams`. List the IDs of the datastreams you want to restrict, select the roles allowed to access them, and you're good to go.
 
 ## Discoverability of restricted datastreams
 
