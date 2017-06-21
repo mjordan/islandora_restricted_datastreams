@@ -4,9 +4,9 @@ Utilty module that controls access to specific datastreams by role.
 
 ## Overview
 
-The original use case for this module is that site admins wanted to store potentially sensitive information in a special datastream. They did, however, want to allow users of a particular role to access the datastream.
+The original use case for this module was that site admins wanted to store potentially sensitive information in a special datastream. However, they did want to allow users of a particular role to access the datastream.
 
-The module provides a relatively light-weight way to control access to specific datastreams. It does this by relying on Drupal's access control mechanisms and does not use XACML policies.
+The module provides a relatively lightweight way to control access to specific datastreams. It does this by relying on Drupal's access control mechanisms and does not use XACML policies.
 
 ## Requirements
 
@@ -18,14 +18,20 @@ Enable this module as you would any other, and configure it at `admin/islandora/
 
 ## Discoverability of restricted datastreams
 
-Most Islandora sites, particularly those that use the [DGI Basic Solr Configs](https://github.com/discoverygarden/basic-solr-config), index the content of all text and XML datastreams by default. They do this by calling the following XSLT stylesheets from within `foxmlToSolr.xslt`:
+Most Islandora sites index the content of all text and XML datastreams by default. For example, sites that use the [DGI Basic Solr Configs](https://github.com/discoverygarden/basic-solr-config) do this by calling the following XSLT stylesheets from within `foxmlToSolr.xslt`:
 
 * `XML_text_nodes_to_solr.xslt`
 * `text_to_solr.xslt`
 
-The implication of this is if your restricted datastreams are indexed by either of these two stylesheets, or by any other that are used by GSearch, all users will be able to query the content of those datastreams, resulting in hits in a search (for example) based on keywords in a restricted datastream, even if the user does not have permission to view the contents of the datastream.
+The implication of this is if your restricted datastreams are indexed by these two stylesheets, or by any other stylesheets are used by GSearch, searches performed by all users can find objects with restricted datastreams. So even if the user cannot view the content of a datastream, their searches may find objects because of hits in the content of those datastreams.
 
-Giving your restricted datastreams a non-standard datastream ID is not sufficient to exclude them from indexing, since these two XSLT stylesheets use datastreams' MIME TYPE to decide it the datastream is indexable. The only practical strategy for not allowing users to accidently find objects based on the contents of a restricted datastream is to not index the content at all. The easiest way to do this is to assign the restricted datastreams a MIME type that is not indexed. By default, this module assigns the MIME type `application/octet-stream` to all datastreams that have a DSID that is configured to be "restricted", regardless of the content of the datastream. You probably should not change this setting unless you have a good reason to.
+Site admins have several options for dealing with this:
+
+1. Do nothing, and allow the content of the restricted datastreams to be discovered in searches by all users. This is the least desirable option from a permissions (and user experience) perspective.
+1. Modify their site's GSearch stylesheets to not index the restricted datastreams. This is the most complicated option.
+1. Apply a MIME type to restricted datastreams that will prevent them from being indexed by GSearch. This is probably the least disruptive option.
+
+This module provides an easy way to implement the third option. It will assign the MIME type `application/octet-stream` to all datastreams that have a DSID that is configured to be restricted, regardless of what the real MIME type should be. Note that the file extension that Islandora will give datastream files of this MIME type if downloaded (which can only be done by authorized users, of course) is `.bin`.
 
 ## Maintainer
 
