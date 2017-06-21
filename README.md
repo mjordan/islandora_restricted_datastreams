@@ -4,7 +4,7 @@ Utilty module that controls access to specific datastreams by role.
 
 ## Overview
 
-The original use case for this module was that site admins wanted to store potentially sensitive information in a special datastream. However, they did want to allow users of a particular role to access the datastream.
+The original use case for this module was that site admins wanted to store potentially sensitive information in a special datastream, and they wanted to allow only users who had a particular Drupal role to access the datastream.
 
 The module provides a relatively lightweight way to control access to specific datastreams. It does this by relying on Drupal's access control mechanisms and does not use XACML policies.
 
@@ -14,16 +14,16 @@ The module provides a relatively lightweight way to control access to specific d
 
 ## Configuration and usage
 
-Enable this module as you would any other, and configure it at `admin/islandora/tools/islandora_restricted_datastreams`. Settings that you will want to configure include the list of datastream IDs to restrict and the list of which roles should be granted access to those datastreams.
+Enable this module as you would any other, and configure it at `admin/islandora/tools/islandora_restricted_datastreams`.
 
 ## Discoverability of restricted datastreams
 
-Most Islandora sites index the content of all text and XML datastreams by default. For example, sites that use the [DGI Basic Solr Configs](https://github.com/discoverygarden/basic-solr-config) do this by calling the following XSLT stylesheets from within `foxmlToSolr.xslt`:
+Most Islandora sites index the content of all text and XML datastreams by default. For example, sites that use the [DGI Basic Solr Configs](https://github.com/discoverygarden/basic-solr-config) do this by having GSearch call the following XSLT stylesheets from within `foxmlToSolr.xslt`:
 
 * `XML_text_nodes_to_solr.xslt`
 * `text_to_solr.xslt`
 
-The implication of this is if your restricted datastreams are indexed by these two stylesheets, or by any other stylesheets are used by GSearch, searches performed by all users can find objects with restricted datastreams. So even if the user cannot view the content of a datastream, their searches may find objects because of hits in the content of those datastreams.
+The implication of this is if your restricted datastreams are indexed by these two stylesheets or by any other stylesheets are used by GSearch, searches performed by all users can potentially find objects with restricted datastreams. So even if the user cannot view the content of a datastream, their searches may find objects because of hits in the content of the restricted datastreams.
 
 Site admins have several options for dealing with this:
 
@@ -31,7 +31,7 @@ Site admins have several options for dealing with this:
 1. Modify their site's GSearch stylesheets to not index the restricted datastreams. This is the most complicated option.
 1. Apply a MIME type to restricted datastreams that will prevent them from being indexed by GSearch. This is probably the least disruptive option.
 
-This module provides an easy way to implement the third option. It will assign the MIME type `application/octet-stream` to all datastreams that have a DSID that is configured to be restricted, regardless of what the real MIME type should be. Note that the file extension that Islandora will give datastream files of this MIME type if downloaded (which can only be done by authorized users, of course) is `.bin`.
+This module provides an easy way to implement the third option. It will assign the MIME type `application/octet-stream` to all datastreams that have a DSID configured to be restricted, regardless of what the real MIME type should be. Note that the default file extension that Islandora will give datastream files of this MIME type if downloaded (which can only be done by authorized users, of course) is `.bin`.
 
 ## Maintainer
 
