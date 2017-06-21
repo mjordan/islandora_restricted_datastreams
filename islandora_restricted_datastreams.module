@@ -42,8 +42,7 @@ function islandora_restricted_datastreams_admin_settings() {
   $form['islandora_restricted_datastreams_mime_type'] = array(
     '#type' => 'textfield',
     '#title' => t('MIME type'),
-    '#size' => 30,
-    '#description' => t('MIME type to assign restricted datastreams. This should be a MIME type that is not indexed by your Islandora. If left blank, Islandora will assign the default MIME type, and the contents of your restricted datastreams may be discoverable by all users.'),
+    '#description' => t('MIME type to assign to restricted datastreams. This should be a MIME type that is not indexed by Islandora. If left blank, Islandora will assign the default MIME type, and the contents of your restricted datastreams may be discoverable by all users.'),
     '#default_value' => variable_get('islandora_restricted_datastreams_mime_type', 'application/octet-stream'),
   );
 

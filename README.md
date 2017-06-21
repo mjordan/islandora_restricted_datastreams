@@ -4,7 +4,7 @@ Utilty module that controls access to specific datastreams by role.
 
 ## Overview
 
-The original use case for this module was that site admins wanted to store potentially sensitive information in a special datastream, and they wanted to allow only users who had a particular Drupal role to access the datastream.
+The original use case for this module was that site admins wanted to store potentially sensitive information in a specific datastream, and they wanted to allow only users who had a particular Drupal role to access the datastream.
 
 The module provides a relatively lightweight way to control access to specific datastreams. It does this by relying on Drupal's access control mechanisms and does not use XACML policies.
 
@@ -32,6 +32,8 @@ Site admins have several options for dealing with this:
 1. Apply a MIME type to restricted datastreams that will prevent them from being indexed by GSearch. This is probably the least disruptive option.
 
 This module provides an easy way to implement the third option. It will assign the MIME type `application/octet-stream` to all datastreams that have a DSID configured to be restricted, regardless of what the real MIME type should be. Note that the default file extension that Islandora will give datastream files of this MIME type if downloaded (which can only be done by authorized users, of course) is `.bin`.
+
+Whatever approach you take, you should perform some tests to see if queries for known restricted datastreams return the results that you expect.
 
 ## Maintainer
 
