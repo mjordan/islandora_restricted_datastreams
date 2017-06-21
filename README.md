@@ -33,7 +33,7 @@ Site admins have several options for dealing with this:
 
 This module provides an easy way to implement the third option. It will assign the MIME type `application/octet-stream` to all datastreams that have a DSID configured to be restricted, regardless of what the real MIME type should be. Note that the default file extension that Islandora will give datastream files of this MIME type if downloaded (which can only be done by authorized users, of course) is `.bin`.
 
-Whatever approach you take, you should perform some tests to see if queries for known restricted datastreams return the results that you expect.
+Whatever approach you take, you should perform some tests to see if queries for known restricted datastreams return the results that you expect. Also, switching between approaches may require reindexing any objects that have restricted datastreams.
 
 ## Maintainer
 
