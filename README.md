@@ -14,7 +14,7 @@ The module provides a relatively lightweight way to control access to specific d
 
 ## Configuration and usage
 
-Enable this module as you would any other, and configure it at `admin/islandora/tools/islandora_restricted_datastreams`.
+Enable this module as you would any other, and configure it at `admin/islandora/tools/islandora_restricted_datastreams`. List the IDs of the datastreams you want to restric, select the roles allowed to access them, and you're good to go.
 
 ## Discoverability of restricted datastreams
 
